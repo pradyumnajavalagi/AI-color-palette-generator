@@ -130,7 +130,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 👨‍💻 Author
 
 **Pradyumna AJ**
-- GitHub: [@your-username](https://github.com/your-username)
+- GitHub: [@pradyumnajavalagi](https://github.com/pradyumnajavalagi)
 
 ## 🙏 Acknowledgments
 
