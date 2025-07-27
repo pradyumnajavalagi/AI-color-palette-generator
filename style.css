@@ -41,6 +41,15 @@ h1::after{
     border-radius: 2px;
 }
 
+#prompt-input {
+  width: 100%;
+  padding: 0.8rem;
+  border-radius: 10px;
+  border: 1px solid #333;
+  margin-bottom: 1rem;
+  font-family: 'Courier New', Courier, monospace;
+}
+
 #generate-btn{
     padding: 10px;
     background-color: #9DFC7C;

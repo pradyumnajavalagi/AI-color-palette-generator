@@ -1,5 +1,8 @@
 const generateBtn = document.getElementById("generate-btn");
 const paletteContainer = document.querySelector(".palette-container");
+const promptInput = document.getElementById("prompt-input");
+
+const GEMINI_API_KEY = "YOUR_API_KEY"; // Replace with your actual key
 
 generateBtn.addEventListener("click", generatePalette);
 
@@ -33,14 +36,52 @@ function showCopySuccess(element) {
   }, 1500);
 }
 
-function generatePalette() {
-  const colors = [];
+async function generatePalette() {
+  const prompt = promptInput.value.trim();
+  let colors = await getPaletteFromGemini(prompt);
 
-  for (let i = 0; i < 5; i++) {
-    colors.push(generateRandomColor());
+  if (!colors) {
+    // Fallback to random generation
+    colors = [];
+    for (let i = 0; i < 5; i++) {
+      colors.push(generateRandomColor());
+    }
   }
 
   updatePaletteDisplay(colors);
+}
+
+async function getPaletteFromGemini(promptText) {
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
+
+  const prompt = promptText
+    ? `Generate 5 hex color codes for this theme: "${promptText}". Only return a comma-separated list of hex values like #FF5733, #33FF57, etc.`
+    : "Generate 5 visually appealing hex color codes.";
+
+  const body = {
+    contents: [{ parts: [{ text: prompt }] }]
+  };
+
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+    if (!text) throw new Error("Empty response");
+
+    const hexCodes = text.match(/#([0-9a-fA-F]{6})/g);
+    if (!hexCodes || hexCodes.length < 5) throw new Error("Not enough valid hex codes");
+
+    return hexCodes.slice(0, 5);
+  } catch (err) {
+    console.error("Gemini API error:", err);
+    return null;
+  }
 }
 
 function generateRandomColor() {
@@ -65,5 +106,3 @@ function updatePaletteDisplay(colors) {
     hexValue.textContent = color;
   });
 }
-
-// generatePalette();
