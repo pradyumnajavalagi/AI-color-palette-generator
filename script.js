@@ -54,9 +54,20 @@ async function generatePalette() {
 async function getPaletteFromGemini(promptText) {
   const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${GEMINI_API_KEY}`;
 
-  const prompt = promptText
-    ? `Generate 5 hex color codes for this theme: "${promptText}". Only return a comma-separated list of hex values like #FF5733, #33FF57, etc.`
-    : "Generate 5 visually appealing hex color codes.";
+const prompt = promptText
+  ? `Generate a UI color palette for the theme: "${promptText}". Return 5 hex color codes, each with a label from this set: Primary, Secondary, Accent, Background, and Text. Respond in JSON format like:
+[
+  { "label": "Primary", "hex": "#FF5733" },
+  { "label": "Secondary", "hex": "#33FF57" },
+  ...
+]`
+  : `Generate a visually appealing UI color palette with 5 colors. Label them as Primary, Secondary, Accent, Background, and Text. Respond in JSON format like:
+[
+  { "label": "Primary", "hex": "#FF5733" },
+  { "label": "Secondary", "hex": "#33FF57" },
+  ...
+]`;
+
 
   const body = {
     contents: [{ parts: [{ text: prompt }] }]
